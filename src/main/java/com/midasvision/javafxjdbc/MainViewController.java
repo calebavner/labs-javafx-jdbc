@@ -29,12 +29,12 @@ public class MainViewController implements Initializable {
 
     @FXML
     public void onMenuItemDepartamento() {
-        System.out.println("Menu Departamento foi clicado");
+        loadView("departamento-view.fxml");
     }
 
     @FXML
     public void onMenuItemSobre() {
-        loadView("sobre.fxml");
+        loadView("sobre-view.fxml");
     }
 
     @Override
