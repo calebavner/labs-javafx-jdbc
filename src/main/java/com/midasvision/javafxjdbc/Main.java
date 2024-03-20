@@ -8,17 +8,23 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class HelloApplication extends Application {
+public class Main extends Application {
+
+    private static Scene scene;
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("main-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("main-view.fxml"));
         ScrollPane scrollPane = fxmlLoader.load();
         scrollPane.setFitToHeight(true);
         scrollPane.setFitToWidth(true);
-        Scene scene = new Scene(scrollPane);
+        scene = new Scene(scrollPane);
         stage.setTitle("MidasSeller");
         stage.setScene(scene);
         stage.show();
+    }
+
+    public static Scene getMainScene() {
+        return scene;
     }
 
     public static void main(String[] args) {
