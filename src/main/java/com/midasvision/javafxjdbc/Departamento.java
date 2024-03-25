@@ -1,4 +1,4 @@
-package com.midasvision.javafxjdbc.entidades;
+package com.midasvision.javafxjdbc;
 
 import java.util.Objects;
 

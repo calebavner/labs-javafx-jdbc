@@ -29,7 +29,7 @@ public class MainViewController implements Initializable {
 
     @FXML
     public void onMenuItemDepartamento() {
-        loadView("departamento-view.fxml");
+        loadView2("departamento-view.fxml");
     }
 
     @FXML
@@ -55,6 +55,30 @@ public class MainViewController implements Initializable {
 
             mainVbox.getChildren().add(mainMenu);
             mainVbox.getChildren().addAll(newVbox.getChildren());
+        } catch(IOException e) {
+            Alerts.showAlert("Erro", null, "Erro ao carregar a tela", Alert.AlertType.ERROR);
+        }
+
+    }
+
+    private synchronized void loadView2(String path) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
+            VBox newVbox = loader.load();
+
+            Scene mainScene = Main.getMainScene();
+            VBox mainVbox = (VBox) ((ScrollPane) mainScene.getRoot()).getContent();
+
+            Node mainMenu = mainVbox.getChildren().get(0);
+            mainVbox.getChildren().clear();
+
+            mainVbox.getChildren().add(mainMenu);
+            mainVbox.getChildren().addAll(newVbox.getChildren());
+
+            DepartamentoViewController controller = loader.getController();
+            controller.setDepartamentoService(new DepartamentoService());
+            controller.updateTableView();
+
         } catch(IOException e) {
             Alerts.showAlert("Erro", null, "Erro ao carregar a tela", Alert.AlertType.ERROR);
         }
