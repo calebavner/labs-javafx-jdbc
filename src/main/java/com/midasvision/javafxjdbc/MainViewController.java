@@ -62,7 +62,7 @@ public class MainViewController implements Initializable {
 
             T controller = loader.getController();
             initAction.accept(controller);
-            
+
         } catch(IOException e) {
             Alerts.showAlert("Erro", null, "Erro ao carregar a tela", Alert.AlertType.ERROR);
         }
