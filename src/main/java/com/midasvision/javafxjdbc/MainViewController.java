@@ -13,6 +13,7 @@ import javafx.scene.layout.VBox;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 
 public class MainViewController implements Initializable {
     @FXML
@@ -29,12 +30,15 @@ public class MainViewController implements Initializable {
 
     @FXML
     public void onMenuItemDepartamento() {
-        loadView2("departamento-view.fxml");
+        loadView("departamento-view.fxml", (DepartamentoViewController controller) -> {
+            controller.setDepartamentoService(new DepartamentoService());
+            controller.updateTableView();
+        });
     }
 
     @FXML
     public void onMenuItemSobre() {
-        loadView("sobre-view.fxml");
+        loadView("sobre-view.fxml", x -> {});
     }
 
     @Override
@@ -42,26 +46,7 @@ public class MainViewController implements Initializable {
 
     }
 
-    private synchronized void loadView(String path) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
-            VBox newVbox = loader.load();
-
-            Scene mainScene = Main.getMainScene();
-            VBox mainVbox = (VBox) ((ScrollPane) mainScene.getRoot()).getContent();
-
-            Node mainMenu = mainVbox.getChildren().get(0);
-            mainVbox.getChildren().clear();
-
-            mainVbox.getChildren().add(mainMenu);
-            mainVbox.getChildren().addAll(newVbox.getChildren());
-        } catch(IOException e) {
-            Alerts.showAlert("Erro", null, "Erro ao carregar a tela", Alert.AlertType.ERROR);
-        }
-
-    }
-
-    private synchronized void loadView2(String path) {
+    private synchronized <T> void loadView(String path, Consumer<T> initAction) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
             VBox newVbox = loader.load();
@@ -75,10 +60,9 @@ public class MainViewController implements Initializable {
             mainVbox.getChildren().add(mainMenu);
             mainVbox.getChildren().addAll(newVbox.getChildren());
 
-            DepartamentoViewController controller = loader.getController();
-            controller.setDepartamentoService(new DepartamentoService());
-            controller.updateTableView();
-
+            T controller = loader.getController();
+            initAction.accept(controller);
+            
         } catch(IOException e) {
             Alerts.showAlert("Erro", null, "Erro ao carregar a tela", Alert.AlertType.ERROR);
         }
