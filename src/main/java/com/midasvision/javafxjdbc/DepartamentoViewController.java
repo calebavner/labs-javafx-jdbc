@@ -40,7 +40,8 @@ public class DepartamentoViewController implements Initializable {
     @FXML
     public void onClickButton(ActionEvent event) {
         Stage parentStage = Utils.currentStage(event);
-        createDialogForm("DepartamentoForm.fxml", parentStage);
+        Departamento obj = new Departamento();
+        createDialogForm(obj,"DepartamentoForm.fxml", parentStage);
     }
 
     @Override
@@ -65,10 +66,14 @@ public class DepartamentoViewController implements Initializable {
         tableViewDepartamento.prefHeightProperty().bind(stage.heightProperty());
     }
 
-    private void createDialogForm(String path, Stage parentStage) {
+    private void createDialogForm(Departamento obj, String path, Stage parentStage) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
             Pane pane = loader.load();
+
+            DepartamentoFormController controller = loader.getController();
+            controller.setDepartamento(obj);
+            controller.attDadosFormulario();
 
             Stage dialogStage = new Stage();
             dialogStage.setTitle("Digite o nome do departamento");

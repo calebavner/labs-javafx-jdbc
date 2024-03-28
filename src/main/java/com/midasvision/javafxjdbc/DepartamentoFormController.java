@@ -11,6 +11,8 @@ import java.util.ResourceBundle;
 
 public class DepartamentoFormController implements Initializable {
 
+    private Departamento departamento;
+
     @FXML
     private Button btSalvar;
     @FXML
@@ -21,6 +23,10 @@ public class DepartamentoFormController implements Initializable {
     private TextField txtId;
     @FXML
     private TextField txtNome;
+
+    public void setDepartamento(Departamento dep) {
+        this.departamento = dep;
+    }
 
     @FXML
     public void onBtSalvar() {
@@ -40,5 +46,12 @@ public class DepartamentoFormController implements Initializable {
     private void inicializarNodes() {
         Constraints.setTextFieldInteger(txtId);
         Constraints.setTextFieldMaxLength(txtNome, 30);
+    }
+
+    public void attDadosFormulario() {
+        if(departamento == null) throw new IllegalStateException();
+
+        txtId.setText(String.valueOf(departamento.getId()));
+        txtNome.setText(departamento.getNome());
     }
 }
