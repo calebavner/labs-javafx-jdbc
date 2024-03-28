@@ -12,6 +12,7 @@ import java.util.ResourceBundle;
 public class DepartamentoFormController implements Initializable {
 
     private Departamento departamento;
+    private DepartamentoService service;
 
     @FXML
     private Button btSalvar;
@@ -28,9 +29,14 @@ public class DepartamentoFormController implements Initializable {
         this.departamento = dep;
     }
 
+    public void setDepartamentoService(DepartamentoService service) {
+        this.service = service;
+    }
+
     @FXML
     public void onBtSalvar() {
-        System.out.println("Botão salvar foi clicado");
+        departamento = getFormData();
+        service.saveOrUpdate(departamento);
     }
 
     @FXML
@@ -53,5 +59,12 @@ public class DepartamentoFormController implements Initializable {
 
         txtId.setText(String.valueOf(departamento.getId()));
         txtNome.setText(departamento.getNome());
+    }
+
+    private Departamento getFormData() {
+        Departamento d = new Departamento();
+        d.setId(Utils.tryParseToInt(txtId.getText()));
+        d.setNome(txtNome.getText());
+        return d;
     }
 }

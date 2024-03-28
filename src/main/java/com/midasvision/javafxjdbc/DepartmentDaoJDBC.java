@@ -1,9 +1,6 @@
 package com.midasvision.javafxjdbc;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +14,33 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 
     @Override
     public void insert(Departamento d) {
+        PreparedStatement ps = null;
+        try {
+            ps = conn.prepareStatement("""
+                INSERT INTO department
+                (name)
+                VALUES
+                (?)""", Statement.RETURN_GENERATED_KEYS);
 
+            ps.setString(1, d.getNome());
+
+            int rowsAffected = ps.executeUpdate();
+            if(rowsAffected > 0) {
+                ResultSet rs = ps.getGeneratedKeys();
+                if(rs.next()) {
+                    int id = rs.getInt(1);
+                    d.setId(Long.valueOf(String.valueOf(id)));
+                }
+                DB.closeResultSet(rs);
+            } else {
+                throw new DbException("Unexpected Error!");
+            }
+
+        } catch(SQLException e) {
+            throw new DbException(e.getMessage());
+        } finally {
+            DB.closeStatement(ps);
+        }
     }
 
     @Override
