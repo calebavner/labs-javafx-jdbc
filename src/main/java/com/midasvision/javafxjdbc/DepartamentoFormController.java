@@ -9,12 +9,15 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class DepartamentoFormController implements Initializable {
 
     private Departamento departamento;
     private DepartamentoService service;
+    private List<DataChangeListener> dataChangeListeners = new ArrayList<>();
 
     @FXML
     private Button btSalvar;
@@ -35,6 +38,10 @@ public class DepartamentoFormController implements Initializable {
         this.service = service;
     }
 
+    public void subscribeDataChangeListener(DataChangeListener listener) {
+        dataChangeListeners.add(listener);
+    }
+
     @FXML
     public void onBtSalvar(ActionEvent event) {
         if(departamento == null)
@@ -44,6 +51,7 @@ public class DepartamentoFormController implements Initializable {
         try {
             departamento = getFormData();
             service.saveOrUpdate(departamento);
+            notifyListeners();
             Utils.currentStage(event).close();
 
         } catch(DbException e) {
@@ -79,5 +87,10 @@ public class DepartamentoFormController implements Initializable {
         d.setId(Utils.tryParseToInt(txtId.getText()));
         d.setNome(txtNome.getText());
         return d;
+    }
+
+    private void notifyListeners() {
+        for(DataChangeListener d : dataChangeListeners)
+            d.onDataChange();
     }
 }

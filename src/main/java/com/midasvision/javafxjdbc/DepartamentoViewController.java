@@ -21,7 +21,8 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class DepartamentoViewController implements Initializable {
+public class DepartamentoViewController implements Initializable, DataChangeListener {
+
     @FXML
     private Button bt;
     @FXML
@@ -74,6 +75,7 @@ public class DepartamentoViewController implements Initializable {
             DepartamentoFormController controller = loader.getController();
             controller.setDepartamento(obj);
             controller.setDepartamentoService(new DepartamentoService());
+            controller.subscribeDataChangeListener(this);
             controller.attDadosFormulario();
 
             Stage dialogStage = new Stage();
@@ -87,5 +89,10 @@ public class DepartamentoViewController implements Initializable {
         } catch(IOException e) {
             Alerts.showAlert("IO Exception", "Error loading view", e.getMessage(), Alert.AlertType.ERROR);
         }
+    }
+
+    @Override
+    public void onDataChange() {
+        updateTableView();
     }
 }
