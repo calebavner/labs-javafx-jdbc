@@ -1,7 +1,9 @@
 package com.midasvision.javafxjdbc;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -34,14 +36,25 @@ public class DepartamentoFormController implements Initializable {
     }
 
     @FXML
-    public void onBtSalvar() {
-        departamento = getFormData();
-        service.saveOrUpdate(departamento);
+    public void onBtSalvar(ActionEvent event) {
+        if(departamento == null)
+            throw new IllegalStateException("A entidade esta nula");
+        if(service == null)
+            throw new IllegalStateException("O service nulo");
+        try {
+            departamento = getFormData();
+            service.saveOrUpdate(departamento);
+            Utils.currentStage(event).close();
+
+        } catch(DbException e) {
+            Alerts.showAlert("Erro", null, "Erro ao salvar o objeto", Alert.AlertType.ERROR);
+        }
+
     }
 
     @FXML
-    public void onBtCancelar() {
-        System.out.println("Botão cancelar foi clicado");
+    public void onBtCancelar(ActionEvent event) {
+        Utils.currentStage(event).close();
     }
 
     @Override
