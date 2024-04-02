@@ -9,15 +9,13 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class DepartamentoFormController implements Initializable {
 
     private Departamento departamento;
     private DepartamentoService service;
-    private List<DataChangeListener> dataChangeListeners = new ArrayList<>();
+    public List<DataChangeListener> dataChangeListeners = new ArrayList<>();
 
     @FXML
     private Button btSalvar;
@@ -56,8 +54,9 @@ public class DepartamentoFormController implements Initializable {
 
         } catch(DbException e) {
             Alerts.showAlert("Erro", null, "Erro ao salvar o objeto", Alert.AlertType.ERROR);
+        } catch(ValidationException e) {
+            setErrorMsgs(e.getErrors());
         }
-
     }
 
     @FXML
@@ -84,13 +83,30 @@ public class DepartamentoFormController implements Initializable {
 
     private Departamento getFormData() {
         Departamento d = new Departamento();
+        ValidationException exception = new ValidationException("Validation Error");
         d.setId(Utils.tryParseToInt(txtId.getText()));
+
+        if(txtNome.getText() == null || txtNome.getText().trim().equals("")) {
+            exception.addError("Nome", "O campo não pode ser vazio");
+        }
         d.setNome(txtNome.getText());
+
+        if(exception.getErrors().size() > 0) {
+            throw exception;
+        }
         return d;
     }
 
     private void notifyListeners() {
         for(DataChangeListener d : dataChangeListeners)
             d.onDataChange();
+    }
+
+    private void setErrorMsgs(Map<String, String> errors) {
+        Set<String> fields = errors.keySet();
+
+        if(fields.contains("Nome")) {
+            errorMsg.setText(errors.get("Nome"));
+        }
     }
 }
